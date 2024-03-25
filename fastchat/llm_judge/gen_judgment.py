@@ -137,16 +137,16 @@ def make_match_single(
 def make_judge_pairwise(judge_model, judge_prompts):
     judges = {}
     judges["default"] = Judge(judge_model, judge_prompts["pair-v2"])
-    judges["math"] = Judge(judge_model, judge_prompts["pair-math-v1"], ref_based=True)
-    judges["default-mt"] = Judge(
-        judge_model, judge_prompts["pair-v2-multi-turn"], multi_turn=True
-    )
-    judges["math-mt"] = Judge(
-        judge_model,
-        judge_prompts["pair-math-v1-multi-turn"],
-        ref_based=True,
-        multi_turn=True,
-    )
+    # judges["math"] = Judge(judge_model, judge_prompts["pair-math-v1"], ref_based=True)
+    # judges["default-mt"] = Judge(
+    #     judge_model, judge_prompts["pair-v2-multi-turn"], multi_turn=True
+    # )
+    # judges["math-mt"] = Judge(
+    #     judge_model,
+    #     judge_prompts["pair-math-v1-multi-turn"],
+    #     ref_based=True,
+    #     multi_turn=True,
+    # )
     return judges
 
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--bench-name",
         type=str,
-        default="mt_bench",
+        default="arena",
         help="The name of the benchmark question set.",
     )
     parser.add_argument(
@@ -254,39 +254,41 @@ if __name__ == "__main__":
 
     check_data(questions, model_answers, ref_answers, models, judges)
 
-    question_math = [q for q in questions if q["category"] in NEED_REF_CATS]
-    question_default = [q for q in questions if q["category"] not in NEED_REF_CATS]
-
+    # question_math = [q for q in questions if q["category"] in NEED_REF_CATS]
+    # question_default = [q for q in questions if q["category"] not in NEED_REF_CATS]
+    question_math = []
+    question_default = [q for q in questions]
+    
     # Make matches
     matches = []
     matches += make_match_func(
         question_default, models, model_answers, judges["default"], baseline_model
     )
-    matches += make_match_func(
-        question_math,
-        models,
-        model_answers,
-        judges["math"],
-        baseline_model,
-        ref_answers,
-    )
-    matches += make_match_func(
-        question_default,
-        models,
-        model_answers,
-        judges["default-mt"],
-        baseline_model,
-        multi_turn=True,
-    )
-    matches += make_match_func(
-        question_math,
-        models,
-        model_answers,
-        judges["math-mt"],
-        baseline_model,
-        ref_answers,
-        multi_turn=True,
-    )
+    # matches += make_match_func(
+    #     question_math,
+    #     models,
+    #     model_answers,
+    #     judges["math"],
+    #     baseline_model,
+    #     ref_answers,
+    # )
+    # matches += make_match_func(
+    #     question_default,
+    #     models,
+    #     model_answers,
+    #     judges["default-mt"],
+    #     baseline_model,
+    #     multi_turn=True,
+    # )
+    # matches += make_match_func(
+    #     question_math,
+    #     models,
+    #     model_answers,
+    #     judges["math-mt"],
+    #     baseline_model,
+    #     ref_answers,
+    #     multi_turn=True,
+    # )
 
     match_stat = {}
     match_stat["bench_name"] = args.bench_name
